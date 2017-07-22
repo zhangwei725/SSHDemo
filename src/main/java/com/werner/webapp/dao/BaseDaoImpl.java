@@ -1,18 +1,18 @@
 package com.werner.webapp.dao;
 
 
-
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Repository("baseDao")
-public class BaseDAOImpl<T, PK extends java.io.Serializable> implements BaseDAO<T, PK> {
+public class BaseDaoImpl<T, PK extends java.io.Serializable> implements BaseDao<T, PK> {
 
     private static Log log;
 
@@ -52,11 +52,25 @@ public class BaseDAOImpl<T, PK extends java.io.Serializable> implements BaseDAO<
         }
         return 1;
     }
+    @Transactional
+    @Override
+    public int batchInsertAndUpdate(List<T> entities) {
+        for (int i = 0; i < entities.size(); i++) {
+            entityManager.persist(entities.get(i));
+        }
+        System.out.println(1111);
+        return 1;
+    }
+
+    @Override
+    public void saveOrUpdate(T entity) {
+        entityManager.merge(entity);
+    }
 
     @Transactional
     public int update(T entity) {
         try {
-            entity = entityManager.merge(entity);
+            entityManager.merge(entity);
         } catch (Exception e) {
             getLog().error("获取对象发生异常:" + e.getMessage());
             return 0;
@@ -189,7 +203,7 @@ public class BaseDAOImpl<T, PK extends java.io.Serializable> implements BaseDAO<
 
 
     public List<Object> findBySQL(String queryString, int maxSize, int firstId) {
-        List<Object> rList = new ArrayList<Object>();
+        List rList = new ArrayList<Object>();
         try {
             Query q = this.getEntityManager().createNativeQuery(queryString);
             q.setMaxResults(maxSize);
@@ -202,7 +216,7 @@ public class BaseDAOImpl<T, PK extends java.io.Serializable> implements BaseDAO<
     }
 
     public List<Object> findBySQL(String queryString, int maxSize, int firstId, Map<String, Object> map) {
-        List<Object> rList = new ArrayList<Object>();
+        List<Object> rList = new ArrayList<>();
         rList = (List<Object>) getList(queryString, maxSize, firstId, map, (List<T>) rList);
         return rList;
     }

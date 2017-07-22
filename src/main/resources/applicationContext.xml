@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-    <context:component-scan base-package="com.werner.webapp"
-                            use-default-filters="false">
+    <context:annotation-config/>
+    <!--spring的配置文件中不扫描带有@Controller注解的类  -->
+    <context:component-scan base-package="com.werner.webapp">
         <context:exclude-filter type="annotation"
                                 expression="org.springframework.stereotype.Controller"/>
-        <context:exclude-filter type="annotation"
-                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
-
-
     <!-- 配置加载 properties-->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property
@@ -21,111 +18,20 @@
             </array>
         </property>
     </bean>
-
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <!--指定数据库连接池-->
-        <property name="dataSource" ref="dataSource"/>
-        <!-- 指定Jpa持久化实现厂商类,这里以Hibernate为例 -->
-        <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
-        <property name="persistenceProvider">
-            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
-        </property>
-        <!-- 指定Entity实体类包路径 -->
-        <property name="packagesToScan">
-            <list>
-                <value>com.werner.webapp.entity</value>
-            </list>
-        </property>
-        <!--指定hibernate的相关属性-->
-        <!--<property name="jpaPropertyMap">-->
-        <!--<map>-->
-        <!--<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL55Dialect"></entry>-->
-        <!--</map>-->
-        <!--</property>-->
-        <!--jpaPropertyMap等同jpaProperties-->
-        <property name="jpaProperties">
+    <!--全局异常处理-->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!-- 定义默认的异常处理页面，当该异常类型的注册时使用 -->
+        <property name="defaultErrorView" value="error"></property>
+        <!-- 定义异常处理页面用来获取异常信息的变量名，默认名为exception -->
+        <property name="exceptionAttribute" value="ex"></property>
+        <!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常也页名作为值 -->
+        <property name="exceptionMappings">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL55Dialect</prop>
-                <!--5.0之前的配置-->
-                <!--<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>-->
-                <!--<prop key="hibernate.physical_naming_strategy">-->
-                <!--org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy-->
-                <!--</prop>-->
-                <!--设置外连接抓取树的最大深度 -->
-                <prop key="hibernate.max_fetch_depth">3</prop>
-                <prop key="hibernate.jdbc.fetch_size">18</prop>
-                <prop key="hibernate.jdbc.batch_size">10</prop>
-                <!-- 自动建表类型 validate|create|create-drop|update -->
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <!-- 是否显示SQL -->
-                <prop key="hibernate.show_sql">true</prop>
-                <!-- 显示SQL是否格式化 -->
-                <prop key="hibernate.format_sql">true</prop>
-                <!-- 关闭实体字段映射校验 -->
-                <prop key="javax.persistence.validation.mode">none</prop>
+                <prop key="com.werner.webapp.common.exception.BusinessException">error-business</prop>
+                <prop key="com.werner.webapp.common.exception.ParameterException">error-parameter</prop>
+
+                <!-- 这里还可以继续扩展对不同异常类型的处理 -->
             </props>
         </property>
     </bean>
-
-    <!--指定实现JPA的适配器-->
-    <bean name="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
-
-    <!-- 阿里 druid 数据库连接池 -->
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
-        <!-- 数据库基本信息配置 -->
-        <property name="url" value="${url}"/>
-        <property name="username" value="${username}"/>
-        <property name="password" value="${password}"/>
-        <property name="driverClassName" value="${driverClassName}"/>
-        <property name="filters" value="${filters}"/>
-        <!-- 最大并发连接数 -->
-        <property name="maxActive" value="${maxActive}"/>
-        <!-- 初始化连接数量 -->
-        <property name="initialSize" value="${initialSize}"/>
-        <!-- 配置获取连接等待超时的时间 -->
-        <property name="maxWait" value="${maxWait}"/>
-        <!-- 最小空闲连接数 -->
-        <property name="minIdle" value="${minIdle}"/>
-        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
-        <property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}"/>
-        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
-        <property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}"/>
-        <property name="validationQuery" value="${validationQuery}"/>
-        <!--建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，
-        如果空闲时间大于timeBetweenEvictionRunsMillis，
-        执行validationQuery检测连接是否有效。-->
-        <property name="testWhileIdle" value="${testWhileIdle}"/>
-        <!--申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。-->
-        <property name="testOnBorrow" value="${testOnBorrow}"/>
-        <!--归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能-->
-        <property name="testOnReturn" value="${testOnReturn}"/>
-        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
-        <property name="maxOpenPreparedStatements" value="${maxOpenPreparedStatements}"/>
-        <!-- 1800 秒，也就是 30 分钟 -->
-        <property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}"/>
-        <!-- 关闭 abanded 连接时输出错误日志 -->
-        <property name="logAbandoned" value="${logAbandoned}"/>
-        <property name="proxyFilters">
-            <list>
-                <ref bean="logFilter"/>
-            </list>
-        </property>
-    </bean>
-
-    <!--log日志记录-->
-    <bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
-        <property name="statementExecutableSqlLogEnable" value="false"/>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
-    </bean>
-
-    <!-- 事务注解 -->
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
-
-
-    
-
-
 </beans>

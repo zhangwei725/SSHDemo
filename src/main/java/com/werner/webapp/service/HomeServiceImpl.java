@@ -1,24 +1,14 @@
-package com.werner.webapp.dao;
+package com.werner.webapp.service;
 
-
-import com.alibaba.fastjson.JSONObject;
-import com.werner.webapp.domain.Result;
-import com.werner.webapp.service.HomeService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import com.werner.webapp.dao.BaseDao;
+import com.werner.webapp.domain.Banner;
+import com.werner.webapp.domain.Data;
+import com.werner.webapp.domain.Relation;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-
+import java.util.List;
 
 /************************************************************************
  *                    .::::.                                            *
@@ -43,10 +33,15 @@ import java.net.URLConnection;
  ************************************************************************
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"/applicationContext.xml"})
-public class BaseDaoImplTest {
+@Service("homeService")
+public class HomeServiceImpl implements HomeService {
+    @Resource()
+    BaseDao baseDao;
 
-
-
+    @Override
+    public void saveData(Data data) {
+        baseDao.batchInsertAndUpdate(data.getBanner());
+        baseDao.batchInsertAndUpdate(data.getData_type());
+        baseDao.batchInsertAndUpdate(data.getRelation_good_four());
+    }
 }
