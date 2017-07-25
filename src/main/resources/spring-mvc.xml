@@ -23,7 +23,6 @@
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".jsp"/>
-        <property name="order" value="1"/>
     </bean>
 
     <!-- 使用Jackson2处理JSON数据转换的 -->
@@ -46,23 +45,25 @@
     </bean>
 
 
+    <!--fastjson配置 mvc配置-->
     <mvc:annotation-driven>
+        <!--配置@ResponseBody由fastjson解析-->
         <mvc:message-converters>
-            <bean class="com.werner.webapp.utils.MappingFastJsonHttpMessageConverter">
-                <property name="supportedMediaTypes">
-                    <list>
-                        <value>text/html;charset=UTF-8</value>
-                        <value>application/json</value>
-                    </list>
-                </property>
-                <property name="serializerFeature">
-                    <array>
-                        <value>WriteMapNullValue</value>
-                        <value>QuoteFieldNames</value>
-                    </array>
-                </property>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="defaultCharset" value="UTF-8"/>
             </bean>
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4"/>
         </mvc:message-converters>
     </mvc:annotation-driven>
+
+    <!--解决axaj跨域请求-->
+    <bean id="fastJsonpResponseBodyAdvice" class="com.alibaba.fastjson.support.spring.FastJsonpResponseBodyAdvice">
+        <constructor-arg>
+            <list>
+                <value>callback</value>
+                <value>jsonp</value>
+            </list>
+        </constructor-arg>
+    </bean>
 
 </beans>
