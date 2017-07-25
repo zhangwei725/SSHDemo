@@ -44,4 +44,5 @@ public class HomeServiceImpl implements HomeService {
         baseDao.batchInsertAndUpdate(data.getData_type());
         baseDao.batchInsertAndUpdate(data.getRelation_good_four());
     }
+
 }

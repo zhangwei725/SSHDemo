@@ -50,8 +50,10 @@ public class Relation implements Serializable {
     private String video_length;
     private String article_video;
     private String advert_url;
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="relation_id")
     private List<Special> goods_special_list;
+
     public String getRelation_id() {
         return relation_id;
     }

@@ -13,7 +13,7 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param entity 实体
      * @return 1：操作成功 0：操作失败
      */
-    int save(T entity);
+   public int save(T entity);
 
     /**
      * 保存多个对象信息
@@ -21,9 +21,9 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param entities 实体
      * @return 1：操作成功 0：操作失败
      */
-    int batchInsertAndUpdate(List<T> entities);
+    public int batchInsertAndUpdate(List<T> entities);
 
-    void saveOrUpdate(T entity);
+    public void saveOrUpdate(T entity);
 
     /**
      * 删除对象
@@ -31,7 +31,7 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param entity 实体
      * @return >0：操作成功
      */
-    int delete(T entity);
+    public int delete(T entity);
 
     /**
      * 删除对象
@@ -39,7 +39,7 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param id 主键
      * @return >0：操作成功
      */
-    int delete(PK id);
+    public int delete(PK id);
 
     /**
      * 根据ID获取实体对象
@@ -47,7 +47,7 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param id ID主键
      * @return 实体
      */
-    T findById(PK id);
+    public T findById(PK id);
 
     /**
      * 根据EJB-QL查询对象
@@ -55,7 +55,7 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param queryString QL语句
      * @return 数据集合
      */
-    List<T> findByQL(String queryString);
+    public List<T> findByQL(String queryString);
 
     /**
      * 根据EJB-QL查询对象
@@ -64,7 +64,7 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param map         参数
      * @return 数据集合
      */
-    List<T> findByQL(String queryString, Map<String, Object> map);
+    public List<T> findByQL(String queryString, Map<String, Object> map);
 
     /**
      * 根据SQL查询对象

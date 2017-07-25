@@ -133,12 +133,6 @@
             <version>4.12</version>
         </dependency>
         <!-- logger end -->
-        <!-- po 转化 dto vo 工具包-->
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.3</version>
-        </dependency>
     </dependencies>
 
     <properties>
