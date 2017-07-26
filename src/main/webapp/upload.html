@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+    <style type="text/css">
+        body {
+            padding: 0;
+            background-color: #f4f4f4;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        ul,
+        li {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: #525252;
+        }
+
+        img {
+            vertical-align: middle;
+        }
+
+        input,
+        button {
+            outline: none;
+            background: none;
+            border: none;
+        }
+
+        .fl {
+            float: left;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        .clear::after {
+            display: block;
+            content: "";
+            clear: both;
+        }
+
+        /*page style*/
+
+        .infoEdt {
+            background-color: #fff;
+            padding: 0 2%;
+            margin-bottom: 6px;
+        }
+
+        .imgUps section {
+            background-color: #fff;
+            padding: 2% 1% 6%;
+            width: 98%;
+        }
+
+        .imgUps p {
+            padding: 0 2%;
+            line-height: 40px;
+            background-color: #fff;
+        }
+
+        .infoEdt div {
+            font-size: 14px;
+            line-height: 45px;
+            color: #000;
+            border-bottom: 1px solid #dfdfdf
+        }
+
+        .infoEdt input {
+            line-height: 45px;
+            text-align: right
+        }
+
+        .imgUps span {
+            font-size: 15px;
+            color: #000;
+        }
+
+        .imgUps form div {
+            position: relative;
+            width: 0;
+            height: 0;
+            padding: 12%;
+            margin: 1% .5%;
+            float: left;
+            background-size: 100% auto;
+            background: #f3f3f3 no-repeat center center;
+        }
+
+        .imgUps form div > em {
+            display: block;
+            position: absolute;
+            border-radius: 50%;
+            height: 26px;
+            width: 26px;
+            font-style: normal;
+            color: #fff;
+            line-height: 30px;
+            text-align: center;
+            top: 0;
+            right: 0;
+            background-size: 47% auto;
+            background: #f3557b url('http://sandbox.runjs.cn/uploads/rs/113/ajzbmzhg/loginBack.png') no-repeat center center;
+        }
+
+        #addPic {
+            display: block;
+            height: 0;
+            width: 0;
+            padding: 12%;
+            margin: 1% .5%;
+            float: left;
+            background-size: 100% 100%;
+            background: url('/img/addPic.png') no-repeat center center;
+        }
+
+        .upsBtn {
+            display: block;
+            background-image: linear-gradient(-132deg, #f3557b 0%, #fa7157 100%);
+            border-radius: 9px;
+            width: 92%;
+            text-align: center;
+            margin: 6% 4%;
+            line-height: 45px;
+            font-size: 18px;
+            color: #ffffff;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+    <script type="text/javascript" src="ajaxfileupload.js"/>
+    <script type="text/javascript">
+        function ajaxFileUpload()
+        {
+            $("#loading")//这里是你要显示加载等待时的图片（默认样式为影藏）
+                .ajaxStart(function(){
+                    $(this).show();
+                })
+                .ajaxComplete(function(){
+                    $(this).hide();
+                });
+
+            $.ajaxFileUpload
+            (
+                {
+                    url:'doajaxfileupload.php',//这个是要提交到上传的php程序文件
+                    secureuri:false,
+                    fileElementId:'fileToUpload',//这里是你文件上传input框的id
+                    dataType: 'json',
+                    data:{name:'logan', id:'id'},
+                    success: function (data, status)
+                    {
+                        if(typeof(data.error) != 'undefined')
+                        {
+                            if(data.error != '')
+                            {
+                                alert(data.error);//如有错误则弹出错误
+                            }else
+                            {
+                                alert(data.msg);//没有错误则弹出上传的信息
+                            }
+                        }
+                    },
+                    error: function (data, status, e)
+                    {
+                        alert(e);
+                    }
+                }
+            )
+
+            return false;
+
+        }
+    </script>
+</head>
+<body>
+<input id="fileToUpload" type="file" size="45" name="fileToUpload">
+    <button class="button" id="buttonUpload" onClick="return ajaxFileUpload();">上传</button>
+
+</body>
+</html>
