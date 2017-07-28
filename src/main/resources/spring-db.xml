@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
     <!--开启事务注解-->
@@ -50,7 +51,6 @@
     </bean>
     <!--指定实现JPA的适配器-->
     <bean name="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
-
     <!-- 配置连接池   配置 c3p0 或者druid 数据库连接池 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 数据库基本信息配置 -->
@@ -92,12 +92,10 @@
             </list>
         </property>
     </bean>
-
     <!--log日志记录-->
     <bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
         <property name="statementExecutableSqlLogEnable" value="false"/>
     </bean>
-
     <!--声明式事务控制-->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="dataSource" ref="dataSource"/>
@@ -105,7 +103,7 @@
     <!-- 指定事务切入点 -->
     <!--aop三个要素    切入点  pointcut  切面 advisor  通知advice-->
     <aop:config>
-        <aop:pointcut id="serviceOperation" expression="execution(* com.werner.webapp.service.*.*(..))"/>
+        <aop:pointcut id="serviceOperation" expression="execution(* com.werner.webapp.*.*(..))"/>
         <aop:advisor pointcut-ref="serviceOperation" advice-ref="txAdvice"/>
     </aop:config>
     <!--通知类型-->

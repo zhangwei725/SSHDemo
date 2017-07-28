@@ -2,11 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
-        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                http://www.springframework.org/schema/mvc
+                http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!-- springmvc的配置文件中不扫描带有@Service注解的类 -->
     <context:component-scan base-package="com.werner.webapp">
@@ -21,55 +25,36 @@
     <mvc:annotation-driven/>
 
     <!-- JSP视图解析器-->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/views/"/>
-        <property name="suffix" value=".jsp"/>
-    </bean>
-
-    <!-- 使用Jackson2处理JSON数据转换的 -->
-    <!-- 为了处理返回的JSON数据的编码，默认是ISO-88859-1的，这里把它设置为UTF-8,解决有乱码的情况 -->
-    <!--<bean id="mappingJacksonHttpMessageConverter"-->
-    <!--class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
-    <!--<property name="supportedMediaTypes">-->
-    <!--<list>-->
-    <!--<value>text/html;charset=UTF-8</value>-->
-    <!--</list>-->
-    <!--</property>-->
-    <!--</bean>-->
-
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/views" p:suffix=".jsp"
+    />
 
     <!-- SpringMVC中的上传文件配置，在这里配置上传文件大小限制不够灵活，建议使用jQuery框架来配置，这样可以节省服务器的压力 -->
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="defaultEncoding" value="utf-8"/>
-        <property name="maxUploadSize" value="10485760000"/>
-        <property name="maxInMemorySize" value="40960"/>
-    </bean>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+          p:defaultEncoding="utf-8" p:maxInMemorySize="40960" p:maxUploadSize="10485760000"
+    />
 
-
-    <!--fastjson配置 mvc配置-->
-    <!--配置文件-->
+    <!--start:使用Jackson 2.x的配置，-->
+    <!--通过处理器映射DefaultAnnotationHandlerMapping来开启支持@Controller注解-->
+    <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />-->
+    <!--通过处理器适配器AnnotationMethodHandlerAdapter来开启支持@RequestMapping注解-->
     <mvc:annotation-driven>
         <mvc:message-converters>
             <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4"
-                  p:fastJsonConfig-ref="fastJsonConfig">
-                <property name="supportedMediaTypes">
-                    <list>
-                        <value>text/html;charset=UTF-8</value>
-                        <value>application/json</value>
-                    </list>
-                </property>
-            </bean>
+                  p:fastJsonConfig-ref="fastJsonConfig" p:supportedMediaTypes-ref="supportedMediaTypes"/>
         </mvc:message-converters>
     </mvc:annotation-driven>
+    <util:list id="supportedMediaTypes">
+        <value>text/html;charset=UTF-8</value>
+        <value>application/json</value>
+    </util:list>
+    <bean id="fastJsonConfig" class="com.alibaba.fastjson.support.config.FastJsonConfig"
+          p:serializeFilters-ref="serializerFeatures"/>
 
-    <bean id="fastJsonConfig" class="com.alibaba.fastjson.support.config.FastJsonConfig">
-        <property name="serializerFeatures">
-            <list>
-                <value>WriteMapNullValue</value>
-                <value>QuoteFieldNames</value>
-            </list>
-        </property>
-    </bean>
+    <util:list id="serializerFeatures">
+        <value>WriteMapNullValue</value>
+        <value>QuoteFieldNames</value>
+    </util:list>
 
     <!--解决axaj跨域请求-->
     <bean id="fastJsonpResponseBodyAdvice" class="com.alibaba.fastjson.support.spring.FastJsonpResponseBodyAdvice">
@@ -80,5 +65,4 @@
             </list>
         </constructor-arg>
     </bean>
-
 </beans>

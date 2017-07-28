@@ -14,13 +14,9 @@ import java.util.Map;
 @Repository("baseDao")
 public class BaseDaoImpl<T, PK extends java.io.Serializable> implements BaseDao<T, PK> {
 
-    private static Log log;
-
-    private Class<T> entityClass;
-
+    private Log log;
     @PersistenceContext
     private EntityManager entityManager;
-
 
     public Log getLog() {
         if (null == log) {
@@ -29,20 +25,10 @@ public class BaseDaoImpl<T, PK extends java.io.Serializable> implements BaseDao<
         return log;
     }
 
-
     public EntityManager getEntityManager() {
         return entityManager;
     }
 
-    public Class<T> getEntityClass() {
-        return entityClass;
-    }
-
-    public void setEntityClass(Class<T> entityClass) {
-        this.entityClass = entityClass;
-    }
-
-    @Transactional
     public int save(T entity) {
         try {
             entityManager.persist(entity);
@@ -52,7 +38,7 @@ public class BaseDaoImpl<T, PK extends java.io.Serializable> implements BaseDao<
         }
         return 1;
     }
-    @Transactional
+
     @Override
     public int batchInsertAndUpdate(List<T> entities) {
         for (int i = 0; i < entities.size(); i++) {
@@ -67,7 +53,6 @@ public class BaseDaoImpl<T, PK extends java.io.Serializable> implements BaseDao<
         entityManager.merge(entity);
     }
 
-    @Transactional
     public int update(T entity) {
         try {
             entityManager.merge(entity);
@@ -78,7 +63,6 @@ public class BaseDaoImpl<T, PK extends java.io.Serializable> implements BaseDao<
         return 1;
     }
 
-    @Transactional
     public int delete(T entity) {
         try {
             entityManager.remove(entityManager.merge(entity));
@@ -89,20 +73,21 @@ public class BaseDaoImpl<T, PK extends java.io.Serializable> implements BaseDao<
         }
     }
 
-    @Transactional
-    public int delete(PK id) {
-        return this.delete(this.findById(id));
+    public int delete(T t, PK id) {
+        return this.delete(this.findById(t, id));
     }
 
-    public T findById(PK id) {
+    @Override
+    public T findById(T t, PK id) {
         T entity = null;
         try {
-            entity = entityManager.find(entityClass, id);
+            entity = (T) entityManager.find(t.getClass(), id);
         } catch (Exception e) {
             getLog().error("获取对象发生异常:" + e.getMessage());
         }
         return entity;
     }
+
 
     public List<T> findByQL(String queryString) {
         List<T> rList = new ArrayList<T>();

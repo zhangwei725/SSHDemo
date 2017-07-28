@@ -1,7 +1,6 @@
 package com.werner.webapp.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.werner.webapp.domain.Banner;
 import com.werner.webapp.domain.Result;
 import com.werner.webapp.service.HomeService;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * advert_id : 319
@@ -55,11 +53,8 @@ public class HomeController {
         return "";
     }
 
-
-
     public String getDataString(String path) {
         String jsonString = null;
-
         try {
             URL url = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -83,5 +78,13 @@ public class HomeController {
         }
         return jsonString;
     }
+
+    @RequestMapping("/index")
+    public void index(String page, String pageSize) {
+
+
+
+    }
+
 
 }

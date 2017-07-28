@@ -1,10 +1,4 @@
-package com.werner.webapp.service;
-
-import com.werner.webapp.domain.Banner;
-import com.werner.webapp.domain.Data;
-import com.werner.webapp.domain.Relation;
-
-import java.util.List;
+package com.werner.webapp.utils.io;
 
 /************************************************************************
  *                    .::::.                                            *
@@ -29,10 +23,6 @@ import java.util.List;
  ************************************************************************
  *
  */
-public interface HomeService {
-
-    public void saveData(Data data);
-
-
-
+public class AppConfig {
+    public static final String UPLOAD_FILE_BASE_PATH = "";
 }

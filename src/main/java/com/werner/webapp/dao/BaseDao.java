@@ -39,7 +39,7 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param id 主键
      * @return >0：操作成功
      */
-    public int delete(PK id);
+    public int delete(T t,PK id);
 
     /**
      * 根据ID获取实体对象
@@ -47,7 +47,7 @@ public interface BaseDao<T, PK extends java.io.Serializable> {
      * @param id ID主键
      * @return 实体
      */
-    public T findById(PK id);
+    public T findById(T t,PK id);
 
     /**
      * 根据EJB-QL查询对象

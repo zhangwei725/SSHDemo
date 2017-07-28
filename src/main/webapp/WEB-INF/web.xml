@@ -70,7 +70,7 @@
         <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
     </listener>
 
-    <!-- 连接池 启用 Web 监控统计功能    start-->
+    <!-- 连接池 启用 Web 监控统计功能    start  /druid/index.html-->
     <filter>
         <filter-name>DruidWebStatFilter</filter-name>
         <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
